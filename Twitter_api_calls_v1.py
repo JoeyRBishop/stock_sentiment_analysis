@@ -4,12 +4,21 @@ import yaml
 from datetime import datetime, timedelta
 
 
-###As the twitter tokens are a secret, these are saved locally 
-with open("twitter_config.yaml", "r") as ymlfile:
-    config = yaml.load(ymlfile)
-    
-bearer_token=config["twitter_tokens"]["Bearer_token"]
+def save_json(filename,dict_payload):
+    '''
+    Parameters
+    ----------
+    filename : str
+        the filename of the json file that you wish to save
+    dict_payload : str
+        the dict/json object to be saved
 
+    Returns
+    -------
+    Saves a json file
+    '''
+    with open(f'{filename}.json', 'w+') as f:
+        json.dump(dict_payload, f)
 
 def create_query(keyword, start_date, end_date, max_results) -> dict:
     '''
@@ -105,20 +114,21 @@ def main_api_get(start_time,bearer_token):
     '''
     Parameters
     ----------
-    start_time : TYPE
-        DESCRIPTION.
-    bearer_token : TYPE
-        DESCRIPTION.
+    start_time : str
+        In the format "%Y-%m-%dT%H:%M:%S.%fZ" i.e. "2022-02-22T00:00:00.000Z"
+        
+    bearer_token : str
+        the authorisation token that twitter required
 
     Returns
     -------
     json_response : TYPE
-        DESCRIPTION.
+        the reponse of the API request
     '''
     end_point = "https://api.twitter.com/2/tweets/search/recent"
     headers =  {"Authorization": f"Bearer {bearer_token}"}
     keyword = "TSLA lang:en"
-    max_results = 10
+    max_results = 100
     
     end_time=end_time_calculate(start_time,1)
     
@@ -127,27 +137,37 @@ def main_api_get(start_time,bearer_token):
     return json_response
 
 
-def save_json(filename,dict_payload):
+
+def main_call_twitter_api(start_time,bearer_token):
     '''
+    This adds one day at the time, for 6 days, and save the returned API 
+    responses into a json format. Where each json file is a day
+    
     Parameters
     ----------
-    filename : str
-        the filename of the json file that you wish to save
-    dict_payload : str
-        the dict/json object to be saved
+    start_time : str
+        In the format "%Y-%m-%dT%H:%M:%S.%fZ" i.e. "2022-02-22T00:00:00.000Z"
+    bearer_token : str
+        the authorisation token that twitter required
 
     Returns
     -------
-    Saves a json file
+    None.
     '''
-    with open(f'{filename}.json', 'w+') as f:
-        json.dump(dict_payload, f)
-  
-
-start_time = "2022-02-24T00:00:00.000Z"
-for i in range(1):
-    payload=main_api_get(start_time,bearer_token)
-    save_json(f"TSLA_{start_time[:10]}",payload)
-    start_time=end_time_calculate(start_time, 1)
+    for i in range(6):
+        payload=main_api_get(start_time,bearer_token)
+        save_json(f"TSLA_{start_time[:10]}",payload)
+        start_time=end_time_calculate(start_time, 1)
+        
+if __name__ == "__main__":
+    ###This can only be 7 days behind the present
+    start_time = "2022-02-24T00:00:00.000Z"
+    ###As the twitter tokens are a secret, these are saved locally 
+    with open("twitter_config.yaml", "r") as ymlfile:
+        config = yaml.load(ymlfile)    
+    bearer_token=config["twitter_tokens"]["Bearer_token"]
+    main_call_twitter_api(start_time,bearer_token)
     
+    
+
 
