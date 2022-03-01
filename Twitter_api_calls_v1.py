@@ -33,7 +33,6 @@ def create_query(keyword, start_date, end_date, max_results) -> dict:
     -------
     query : dict
         Creates the params part in the GET request
-
     '''
 
     query = {'query': keyword,
@@ -68,14 +67,12 @@ def connect_to_endpoint(url, headers, params, next_token = None) -> dict:
     -------
     response.json() : dict
         The response resposne of the API
-
     '''
     params['next_token'] = next_token 
     response = requests.request("GET", url, headers = headers, params = params)
     if response.status_code != 200:
         print("Endpoint Response Code: " + str(response.status_code))
         raise Exception(response.status_code, response.text)
-    breakpoint()
     return response.json()
 
 def end_time_calculate(start_time,days_added) -> str:
@@ -95,7 +92,6 @@ def end_time_calculate(start_time,days_added) -> str:
     -------
     end_time : str
         The end date in correct format (see start_time)        
-
     '''
     date_format = "%Y-%m-%dT%H:%M:%S.%fZ"
     start_time = datetime.strptime(start_time, date_format)
@@ -107,8 +103,6 @@ def end_time_calculate(start_time,days_added) -> str:
 
 def main_api_get(start_time,bearer_token):
     '''
-    
-
     Parameters
     ----------
     start_time : TYPE
@@ -120,7 +114,6 @@ def main_api_get(start_time,bearer_token):
     -------
     json_response : TYPE
         DESCRIPTION.
-
     '''
     end_point = "https://api.twitter.com/2/tweets/search/recent"
     headers =  {"Authorization": f"Bearer {bearer_token}"}
@@ -136,8 +129,6 @@ def main_api_get(start_time,bearer_token):
 
 def save_json(filename,dict_payload):
     '''
-    
-
     Parameters
     ----------
     filename : str
@@ -148,12 +139,10 @@ def save_json(filename,dict_payload):
     Returns
     -------
     Saves a json file
-
     '''
     with open(f'{filename}.json', 'w+') as f:
         json.dump(dict_payload, f)
-# with open('output.json', 'r') as f:
-#     data=json.load(f)    
+  
 
 start_time = "2022-02-24T00:00:00.000Z"
 for i in range(1):
