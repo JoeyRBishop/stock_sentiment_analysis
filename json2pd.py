@@ -24,6 +24,7 @@ def twitter_date2dt(df,header):
     '''
     date_format = "%Y-%m-%dT%H:%M:%S.%fZ"
     column=df[header].apply(lambda x: datetime.strptime(x, date_format))
+    column=column.dt.date
     return column
 
 
@@ -59,7 +60,9 @@ def main_json2pd(path_input):
         all_df[path]=df
     df=pd.concat(all_df)
     ###Making columns more usable
-    df["created_at"]=twitter_date2dt(df,"created_at")
+    df["date"]=twitter_date2dt(df,"created_at")
+    df=df.drop(columns=["created_at"])
+    
     df["account_created_at"]=twitter_date2dt(df,"account_created_at")
     return df
         

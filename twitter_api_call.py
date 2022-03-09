@@ -168,6 +168,7 @@ def main_call_twitter_api(start_time, bearer_token):
             save_json(f"TSLA_{start_time[:10]}", payload)
             start_time = end_time_calculate(start_time, 1)
         except Exception as e:
+            start_time = end_time_calculate(start_time, 1)
             print(e)
             
 
