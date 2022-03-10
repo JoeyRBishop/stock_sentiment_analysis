@@ -2,6 +2,7 @@
 Preparing the data for the model
 '''
 from transformers import pipeline
+###initalise the sentiment model
 sentiment_analiser = pipeline("sentiment-analysis",model="siebert/sentiment-roberta-large-english")
 
 def main_sentiment_analysis(tweets):
