@@ -1,12 +1,27 @@
 # stock_sentiment_analysis
-This needs updating at a later date.
 
-The idea of this project isw to see if one can use public tweets (twitter) to predict short term rises and falls in stock price (TSLA, as an itinial starting point).
-I chose Tesla as it seems to be (from a breif analysis) a stock were there are a lot of "strong" options.
-I will use sentiment analysis techquies to see if twitters consensus (feeling possitive or negative about Tesla) can be used to predict the change in tomorrows stock price.
+Using TSLA tweets to earn serious alpha. **Currently under development**
 
-The steps required to complete this project:
-	Gather tweets (in english) that mention TSLA (I chose TSLA rather than Tesla for two reasons as TSLA will always mean the company and I feel like the ticker will be read by people who are active in the stock market).
-	Gather historical price data of Telsa, so that we have a record of the price changes
-	Use sentiemnt analysis to classify, tweets into possitive, negative and netural.
-	Test to see if there is a correlation between price changes and tweets
+## Background
+The aim of this repository is to develop a set of python scripts to scrape and analyse public sentiment about a specified stock/crypocurrency, and see if this has any predictive power when considering short term increases in price. Specifically, this repo is currently restricted to:
+- One ticker only (TSLA - Tesla); functionality for other tickers will be included in future commits.
+- Sentiment scraped from tweets, categorised as: 'positive', 'negative' and 'neutral'.
+- Changes in price on a daily scale (other time-frames *may* be investigated in the future).
+
+## The Approach
+1. The daily stock prices are scraped from yahoo finance using the `yfinance` library, this allows a comparison between daily prices and see if there is any gap-up/down behaviours between the last day's closing price and the current day's open price. See 'stock_data.py'.
+2. Tweets are gathered that mention the ticker (i.e. TSLA for Tesla), this was chosen over using the full name since it is more likely that active investors and traders use this language. This is performed in the `twitter_api_call.py` script, which can be run by the function `main_twitter_api_call`.
+3. The tweets scraped in step 2 are grouped into 'positive', 'negative' and 'neutral'. This is performed by the `sentiment-roberta-large-english` model with the script `sentiment_analysis.py`.
+4. Perform simple correlation tests to identify if the overall twitter sentiment has any predictive power on the daily price movements.
+
+## WIP
+The current aim is to finalise:
+1. The data collection, as twitter's basic API only allows access to the last weeks worth of data.
+2. The analysis of the current approach.
+
+## Future work
+Currently, this repository is in a very basic state. In the future I plan to work on (not in any order):
+1. Expanding the number of stocks or crypocurrencys used.
+2. Increasing the historic data range of tweets.
+3. Gathering sentiment data from multiple sources (e.g. reddit, comments on financal websites).
+4. Fine-tune the sentiment analysis model.
