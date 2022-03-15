@@ -9,37 +9,9 @@ from sentiment_analysis import main_sentiment_analysis
 from stock_data import main_stock_data
 from twitter_api_call import main_twitter_api_call
 
-
-def quick_pandas():
-    file = pd.read_csv("finished_worksheet.csv")
-    file_mod = file[abs(file["percentage_change"]) > 2]
-    file_length = len(file_mod)
-    negative_increase = file_mod[
-        (file_mod["classification"] == 0) & (file_mod["label"] == 1)
-    ]
-    negative_decrease = file_mod[
-        (file_mod["classification"] == 0) & (file_mod["label"] == 0)
-    ]
-    positive_increase = file_mod[
-        (file_mod["classification"] == 1) & (file_mod["label"] == 1)
-    ]
-    positive_decrease = file_mod[
-        (file_mod["classification"] == 1) & (file_mod["label"] == 0)
-    ]
-    print("negative_increase")
-    print(len(negative_increase) / file_length)
-    print("negative_decrease")
-    print(len(negative_decrease) / file_length)
-    print("positive_increase")
-    print(len(positive_increase) / file_length)
-    print("positive_decrease")
-    print(len(positive_decrease) / file_length)
-
-
-
 if __name__ == "__main__":
     price="close"
-    main_twitter_api_call("2022-03-06T00:00:00.000Z")
+    main_twitter_api_call("2022-03-07T00:00:00.000Z")
     
     df_twitter=main_json2pd("")
     
