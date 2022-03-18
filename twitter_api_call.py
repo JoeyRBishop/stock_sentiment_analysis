@@ -94,7 +94,7 @@ def connect_to_endpoint(url, headers, params, next_token=None) -> dict:
     return response.json()
 
 
-def end_time_calculate(start_time, days_added) -> str:
+def twitter_day_change(start_time, days_added) -> str:
     """
     Twitter needs the date in a certain format, hence we add an int number of
     days to the start date to obtain the end date.
@@ -105,7 +105,8 @@ def end_time_calculate(start_time, days_added) -> str:
     start_time : str
         In the format "%Y-%m-%dT%H:%M:%S.%fZ" i.e. "2022-02-22T00:00:00.000Z"
     days_added : int
-        The number of days added to the start date to obtain the end date.
+        The number of days added or "taken away" to the start date to obtain 
+        the end date.
 
     Returns
     -------
@@ -117,6 +118,27 @@ def end_time_calculate(start_time, days_added) -> str:
     end_time = start_time + timedelta(days=days_added)
     end_time = datetime.strftime(end_time, date_format)
     return end_time
+
+def date2twitter_date(date):
+    '''
+    Coverts str date into the "twitter" date
+
+    Parameters
+    ----------
+    date : str
+        The date in the format "YYYY-mm-dd"
+
+    Returns
+    -------
+    date : str
+        The date in the format "%Y-%m-%dT%H:%M:%S.%fZ"
+
+    '''
+    date=datetime.strptime(date,"%Y-%m-%d")
+    date_format = "%Y-%m-%dT%H:%M:%S.%fZ"
+    date=datetime.strftime(date, date_format)
+    return date  
+
 
 
 def main_api_get(start_time, bearer_token):
@@ -139,22 +161,23 @@ def main_api_get(start_time, bearer_token):
     keyword = "TSLA lang:en"
     max_results = 100
 
-    end_time = end_time_calculate(start_time, 1)
+    end_time = twitter_day_change(start_time, 1)
 
     params = create_query(keyword, start_time, end_time, max_results)
     json_response = connect_to_endpoint(end_point, headers, params)
     return json_response
 
 
-def main_call_twitter_api(start_time, bearer_token):
-    """
+def main_call_twitter_api(start_dates, bearer_token):
+    """    
     This adds one day at the time, for 6 days, and save the returned API
     responses into a json format. Where each json file is a day
 
     Parameters
     ----------
-    start_time : str
-        In the format "%Y-%m-%dT%H:%M:%S.%fZ" i.e. "2022-02-22T00:00:00.000Z"
+    start_dates : list
+        A list of dates that have not been utilised in the 
+        format "%Y-%m-%dT%H:%M:%S.%fZ" i.e. "2022-02-22T00:00:00.000Z"
     bearer_token : str
         the authorisation token that twitter required
 
@@ -162,20 +185,19 @@ def main_call_twitter_api(start_time, bearer_token):
     -------
     saves payload as json object
     """
-    for i in range(6):
+    for start_time in start_dates:
         try:
             payload = main_api_get(start_time, bearer_token)
             save_json(f"TSLA_{start_time[:10]}", payload)
-            start_time = end_time_calculate(start_time, 1)
         except Exception as e:
-            start_time = end_time_calculate(start_time, 1)
             print(e)
-            
+          
+
 
     
-def main_twitter_api_call(start_time):
+def main_twitter_api_call(start_dates):
     ###As the twitter tokens are a secret, these are saved locally
     with open("twitter_config.yaml", "r") as ymlfile:
         config = yaml.safe_load(ymlfile)
     bearer_token = config["twitter_tokens"]["Bearer_token"]
-    main_call_twitter_api(start_time, bearer_token)
+    main_call_twitter_api(start_dates, bearer_token)

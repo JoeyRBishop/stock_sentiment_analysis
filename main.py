@@ -10,8 +10,9 @@ from stock_data import main_stock_data
 from twitter_api_call import main_twitter_api_call
 
 if __name__ == "__main__":
-    price="close"
-    main_twitter_api_call("2022-03-07T00:00:00.000Z")
+    price="close"    
+    
+    main_twitter_api_call("2022-03-11T00:00:00.000Z")
     
     df_twitter=main_json2pd("")
     
