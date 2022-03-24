@@ -187,6 +187,7 @@ def main_call_twitter_api(start_dates, bearer_token):
     """
     for start_time in start_dates:
         try:
+            start_time=date2twitter_date(start_time)
             payload = main_api_get(start_time, bearer_token)
             save_json(f"TSLA_{start_time[:10]}", payload)
         except Exception as e:

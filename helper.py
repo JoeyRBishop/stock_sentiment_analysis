@@ -17,6 +17,7 @@ def date_to_download():
     already_present_date = []
     files = [f for f in os.listdir(".") if os.path.isfile(f)]
     for f in files:
+        ### Search for all TSLA tickers that are json files
         if len(f) == 20 and f[:5] == "TSLA_" and f[15:] == ".json":
             already_present_date.append(f[5:15])
 
