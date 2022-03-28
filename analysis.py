@@ -17,6 +17,11 @@ def quick_pandas():
     positive_decrease = file_mod[
         (file_mod["classification"] == 1) & (file_mod["label"] == 0)
     ]
+
+    expected_success = file_length * (file_mod["classification"] == 1)
+    chi_df = (file_mod["classification"] - expected_success) ** 2 / expected_success
+    chi_df.sum()
+
     print("negative_decrease:")
     print(len(negative_decrease) / file_length)
     print("negative_increase:")
